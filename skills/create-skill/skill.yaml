@@ -1,0 +1,147 @@
+name: skill-creator
+version: 1.0.0
+description: |
+  一个面向 AI Agent 的通用型、标准化、测试优先（Test-First）、
+  可组合、可观测、可持续优化的 Skill 创建框架。
+
+  该 Skill 用于将用户需求抽象为：
+  - 可复用能力
+  - 可触发工作流
+  - 可评估执行单元
+  - 可持续演化的 Agent Skill
+
+category:
+  - agent-engineering
+  - skill-generation
+  - eval-driven-development
+  - workflow-engineering
+
+author: gavin.qin
+
+trigger:
+  semantic:
+    - 创建 skill
+    - 生成技能
+    - 构建 agent 能力
+    - workflow 自动化
+    - AI 工作流设计
+    - 可复用工作流
+    - 能力抽象
+    - 构建 agent 系统
+
+  should_trigger_when:
+    - 用户希望构建可复用 AI 工作流
+    - 用户描述重复性任务
+    - 用户需要标准化能力模块
+    - 用户需要 Agent 自动执行任务
+    - 用户需要测试驱动的 AI 能力设计
+
+  should_not_trigger_when:
+    - 一次性简单提问
+    - 普通聊天
+    - 单次文本生成
+    - 不具备复用价值的需求
+
+inputs:
+  - task_description
+  - expected_outputs
+  - constraints
+  - runtime_environment
+
+outputs:
+  - structured_skill_package
+  - eval_suite
+  - workflow_definition
+  - trigger_specification
+
+dependencies:
+  - retrieval-system
+  - eval-engine
+  - telemetry-runtime
+
+token_budget:
+  soft_limit: 12000
+  hard_limit: 24000
+
+latency_budget:
+  target_ms: 8000
+
+risk_level: medium
+
+observability:
+  enabled: true
+  collect:
+    - trigger_accuracy
+    - completion_rate
+    - hallucination_rate
+    - token_usage
+    - latency
+    - recovery_attempts
+
+eval_strategy:
+  methodology:
+    - trigger-eval
+    - execution-eval
+    - regression-eval
+    - adversarial-eval
+
+  success_criteria:
+    trigger_accuracy: ">= 92%"
+    completion_rate: ">= 90%"
+    hallucination_rate: "<= 3%"
+
+workflow:
+  steps:
+    - name: intent_extraction
+      description: 分析用户真实需求
+      required: true
+    - name: capability_abstraction
+      description: 将用户需求转换为可复用能力
+      required: true
+    - name: eval_definition
+      description: 定义 Eval（强制步骤）
+      required: true
+    - name: skill_generation
+      description: 生成 Skill
+      required: true
+    - name: trigger_optimization
+      description: 优化 Trigger
+      required: true
+    - name: runtime_optimization
+      description: Runtime 优化
+      required: true
+
+  state_machine:
+    states:
+      - idle
+      - processing
+      - success
+      - failure
+    transitions:
+      - from: idle
+        to: processing
+        trigger: request_received
+      - from: processing
+        to: success
+        trigger: processing_complete
+      - from: processing
+        to: failure
+        trigger: processing_failed
+      - from: success
+        to: idle
+        trigger: cleanup
+      - from: failure
+        to: idle
+        trigger: cleanup
+
+artifacts:
+  - SKILL.md
+  - skill.yaml
+  - workflow_graph
+  - eval_suite
+  - telemetry_hooks
+
+directories:
+  - scripts/
+  - references/
+  - assets/

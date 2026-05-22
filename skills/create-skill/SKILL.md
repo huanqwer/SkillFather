@@ -63,13 +63,13 @@ dependencies:
   - telemetry-runtime
 
 token_budget:
-  soft_limit: {ask_user | 12000}
-  hard_limit: {ask_user | 24000}
+  soft_limit: 12000
+  hard_limit: 24000
 
 latency_budget:
-  target_ms: {ask_user | 8000}
+  target_ms: 8000
 
-risk_level: {ask_user | medium}
+risk_level: medium
 
 observability:
   enabled: true
@@ -273,13 +273,13 @@ STOP。
 - skill.yaml
 - 带状态管理的工作流图
 - 评估套件
-- 遥测钩子
+- 监控钩子
 
 Skill 必须：
 
 - 标准化
 - 结构化
-- 机器可读
+- AI阅读友好
 
 ---
 
