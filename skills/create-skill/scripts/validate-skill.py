@@ -8,8 +8,13 @@ Skill 验证脚本
 import os
 import sys
 import re
-import yaml
 from pathlib import Path
+
+try:
+    import yaml
+    HAS_YAML = True
+except ImportError:
+    HAS_YAML = False
 
 
 def validate_skill_name(name: str) -> tuple[bool, str]:
@@ -85,22 +90,32 @@ def validate_skill_file(skill_path: Path) -> list[str]:
             return errors
         
         frontmatter_text = content[3:frontmatter_end]
-        frontmatter = yaml.safe_load(frontmatter_text)
         
-        if not isinstance(frontmatter, dict):
-            errors.append("YAML Frontmatter 必须是字典格式")
-            return errors
-        
-        # 验证 Frontmatter
-        errors.extend(validate_frontmatter(frontmatter))
-        
-        # 检查目录名与 name 字段是否一致
-        if 'name' in frontmatter:
-            if skill_path.name != frontmatter['name']:
-                errors.append(f"目录名 '{skill_path.name}' 与 name 字段 '{frontmatter['name']}' 不一致")
+        if HAS_YAML:
+            frontmatter = yaml.safe_load(frontmatter_text)
+            
+            if not isinstance(frontmatter, dict):
+                errors.append("YAML Frontmatter 必须是字典格式")
+                return errors
+            
+            # 验证 Frontmatter
+            errors.extend(validate_frontmatter(frontmatter))
+            
+            # 检查目录名与 name 字段是否一致
+            if 'name' in frontmatter:
+                if skill_path.name != frontmatter['name']:
+                    errors.append(f"目录名 '{skill_path.name}' 与 name 字段 '{frontmatter['name']}' 不一致")
+        else:
+            # 没有 yaml 时进行基本验证
+            errors.append("警告: 未安装 pyyaml，跳过 YAML Frontmatter 详细验证")
+            # 简单检查是否包含 name 和 description
+            if 'name:' not in frontmatter_text:
+                errors.append("缺少必需字段: name")
+            if 'description:' not in frontmatter_text:
+                errors.append("缺少必需字段: description")
     
-    except yaml.YAMLError as e:
-        errors.append(f"YAML 解析错误: {e}")
+    except Exception as e:
+        errors.append(f"解析错误: {e}")
     
     return errors
 
