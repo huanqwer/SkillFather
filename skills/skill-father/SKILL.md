@@ -31,6 +31,10 @@ trigger:
     - 可复用工作流
     - 能力抽象
     - 构建 agent 系统
+    - 优化 skill
+    - 改进技能
+    - 完善 skill
+    - 更新技能
 
   should_trigger_when:
     - 用户希望构建可复用 AI 工作流
@@ -38,6 +42,9 @@ trigger:
     - 用户需要标准化能力模块
     - 用户需要 Agent 自动执行任务
     - 用户需要测试驱动的 AI 能力设计
+    - 用户希望优化已有 Skill
+    - 用户需要改进现有技能
+    - 用户需要完善 Skill 结构
 
   should_not_trigger_when:
     - 一次性简单提问
@@ -271,14 +278,17 @@ STOP。
 
 - SKILL.md
 - skill.yaml
-- evals/ 目录（必需）
+- evals/ 目录（必需，即使为空也要创建）
   - trigger_cases.json
   - success_cases.json
   - failure_cases.json
   - benchmarks.json
-- workflows/ 目录（必需）
+- workflows/ 目录（必需，即使为空也要创建）
   - state-machine.yaml
-- 监控钩子
+- scripts/ 目录（必需，即使为空也要创建）
+- references/ 目录（必需，即使为空也要创建）
+- assets/ 目录（必需，即使为空也要创建）
+- README.md（可选）
 
 **必须使用标准化目录结构**：
 
@@ -293,11 +303,16 @@ skill-name/
 │   └── benchmarks.json
 ├── workflows/            # 必需：工作流定义（YAML 格式）
 │   └── state-machine.yaml
-├── scripts/              # 可选
-├── references/           # 可选
-├── assets/               # 可选
-└── README.md             # 可选
+├── scripts/              # 必需：可执行脚本
+├── references/           # 必需：参考文档
+├── assets/               # 必需：模板和静态资源
+└── README.md             # 可选：Skill 说明
 ```
+
+**重要**：
+- 所有标准目录（evals/、workflows/、scripts/、references/、assets/）必须在创建 Skill 时被创建
+- 即使目录暂时为空，也要创建目录结构
+- 这确保了目录结构的一致性和可扩展性
 
 Skill 必须：
 
