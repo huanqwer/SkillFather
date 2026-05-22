@@ -1,6 +1,8 @@
 # SkillFather
 创建第一个Skill之前，你需要一个能创建Skill的Skill。
 
+如果对于本项目的原理感兴趣，可以看我博客里的本项目万字解析 https://blog.csdn.net/itkfdektxa/article/details/161311452
+
 ## 核心思想
 当我耗费大量时间编写了几十个Skill之后，我意识到，我需要将我编写Skill的经验，抽象成一个通用且能被复用的skill框架。
 
