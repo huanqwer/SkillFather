@@ -1,5 +1,13 @@
 # Skill 规范摘要
 
+## 规范来源
+
+官方规范：https://agentskills.io/specification
+
+如果网络不支持访问官方规范，本工程有备份文件：`specs/skill-spec-bak-2026-05-21`
+
+---
+
 ## 核心概念
 
 Agent Skills 是一种开放标准，用于给 AI Agent 提供可复用的能力、工作流和领域知识。

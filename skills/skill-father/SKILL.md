@@ -147,13 +147,40 @@ eval_strategy:
 
 你必须读取https://agentskills.io/specification 上最新的Skill的规范，这能帮助你创建出最新且符合规范的skills。
 
-如果用户的网络不支持你访问 https://agentskills.io/specification 这个网站，我们的工程也有相应的备份 `specs/skill-spec-bak-2026-05-21.md`。
+Skill 规范摘要：`references/skill-spec-summary.md`
 
 最终的产物需要生成在skills目录下。如果没有skills目录，则先创建。
 
 ---
 
+# 参考资源
+
+skill-father 自身提供的参考资源：
+
+- **工作流定义**：`workflows/state-machine.yaml` - skill-father 的状态机和工作流定义
+- **Eval 示例**：`evals/` - skill-father 的 Eval 测试用例（JSON 格式）
+  - `trigger_cases.json` - 触发条件测试
+  - `success_cases.json` - 成功场景测试
+  - `failure_cases.json` - 失败场景测试
+  - `benchmarks.json` - 性能基准测试
+- **模板文件**：`assets/` - 创建 Skill 的模板
+  - `skill-template.md` - SKILL.md 模板
+  - `eval-template.md` - Eval JSON 格式模板
+  - `workflow-template.md` - 工作流 YAML 格式模板
+- **参考文档**：`references/` - 最佳实践和规范说明
+  - `skill-spec-summary.md` - Skill 规范摘要
+  - `eval-best-practices.md` - Eval 最佳实践
+  - `trigger-optimization.md` - Trigger 优化指南
+- **可执行脚本**：`scripts/` - 验证和生成工具
+  - `validate-skill.py` - Skill 验证脚本
+  - `eval-runner.py` - Eval 运行脚本
+  - `skill-generator.py` - Skill 生成脚本
+
+---
+
 # 工作流程
+
+工作流定义：`workflows/state-machine.yaml`
 
 ## Step 1：意图抽取（Intent Extraction）
 
@@ -228,6 +255,9 @@ STOP。
 
 ## Step 3：定义 Eval（强制步骤）
 
+Eval 测试用例模板：`assets/eval-template.md`
+Eval 示例：`evals/trigger_cases.json`, `evals/success_cases.json`, `evals/failure_cases.json`, `evals/benchmarks.json`
+
 必须优先生成 Eval。
 
 禁止跳过。
@@ -274,6 +304,9 @@ STOP。
 
 ## Step 4：生成 Skill
 
+SKILL.md 模板：`assets/skill-template.md`
+工作流模板：`assets/workflow-template.md`
+
 生成：
 
 - SKILL.md
@@ -314,6 +347,21 @@ skill-name/
 - 即使目录暂时为空，也要创建目录结构
 - 这确保了目录结构的一致性和可扩展性
 
+**SKILL.md 必须包含文件引用**：
+生成的 SKILL.md 必须在适当位置引用相关文件：
+- 工作流程部分应引用 `workflows/state-machine.yaml`
+- Eval 策略部分应引用 `evals/` 目录下的 JSON 文件
+- 参考资源部分应引用 `references/` 目录下的文档
+- 模板使用部分应引用 `assets/` 目录下的模板
+- 脚本使用部分应引用 `scripts/` 目录下的脚本
+
+示例引用格式：
+```markdown
+工作流定义：workflows/state-machine.yaml
+Eval 测试用例：evals/trigger_cases.json, evals/success_cases.json
+参考文档：references/skill-spec-summary.md
+```
+
 Skill 必须：
 
 - 标准化
@@ -323,10 +371,13 @@ Skill 必须：
 - 使用标准化的 workflows/ 目录结构
 - Eval 测试用例必须使用 JSON 格式
 - 工作流定义必须使用 YAML 格式
+- SKILL.md 必须包含对相关文件的引用
 
 ---
 
 ## Step 5：优化 Trigger
+
+Trigger 优化指南：`references/trigger-optimization.md`
 
 优化：
 
