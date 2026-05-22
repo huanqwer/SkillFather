@@ -11,9 +11,10 @@ references/
 ├── skill-spec-summary.md      # Skill 规范摘要
 ├── eval-best-practices.md     # Eval 最佳实践
 ├── trigger-optimization.md    # Trigger 优化指南
-├── skill-creator-eval.md      # skill-creator 的 Eval 定义
 └── README.md                  # 本文件
 ```
+
+**注意**：skill-creator 的 Eval 定义已移至 `evals/` 目录，使用 JSON 格式。
 
 ---
 
@@ -107,29 +108,6 @@ references/
 
 ---
 
-### skill-creator-eval.md
-
-**用途**：skill-creator 本身的 Eval 定义
-
-**包含内容**：
-- Trigger Eval：应该/不应该触发 skill-creator 的情况
-- Success Eval：正确输出示例和测试用例
-- Failure Eval：失败案例和处理
-- Adversarial Eval：对抗性测试用例
-
-**使用场景**：
-- 验证 skill-creator 的正确性
-- 作为其他 Skill Eval 的参考
-- 理解 Eval 的具体写法
-
-**测试用例示例**：
-- Trigger：用户说"创建 skill"应该触发
-- Success：完整执行 6 步工作流程
-- Failure：需求不明确时的处理
-- Adversarial：Prompt Injection 的防御
-
----
-
 ## 使用指南
 
 ### Agent 使用建议
@@ -140,9 +118,9 @@ references/
    - 使用 `trigger-optimization.md` 优化 Trigger
 
 2. **优化 Skill 时**：
-   - 使用 `skill-creator-eval.md` 作为 Eval 参考模板
    - 参考 `eval-best-practices.md` 的方法论
    - 使用 `trigger-optimization.md` 改进检索准确率
+   - 参考 `evals/` 目录中的 JSON 格式 Eval 示例
 
 3. **验证 Skill 时**：
    - 使用 `skill-spec-summary.md` 检查格式
@@ -156,6 +134,8 @@ references/
 参见规范：references/skill-spec-summary.md
 参考 Eval 最佳实践：references/eval-best-practices.md
 优化 Trigger：references/trigger-optimization.md
+参考 Eval 示例：evals/trigger_cases.json
+参考工作流示例：workflows/state-machine.yaml
 ```
 
 ---

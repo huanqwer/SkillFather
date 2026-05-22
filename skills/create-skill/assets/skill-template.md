@@ -88,6 +88,29 @@ eval_strategy:
 
 ---
 
+# 标准化目录结构
+
+必须使用以下目录结构：
+
+```
+skill-name/
+├── SKILL.md              # 必需：Skill 主文件
+├── skill.yaml            # 必需：机器可读配置
+├── evals/                # 必需：Eval 测试用例（JSON 格式）
+│   ├── trigger_cases.json
+│   ├── success_cases.json
+│   ├── failure_cases.json
+│   └── benchmarks.json
+├── workflows/            # 必需：工作流定义（YAML 格式）
+│   └── state-machine.yaml
+├── scripts/              # 可选：可执行脚本
+├── references/           # 可选：参考文档
+├── assets/               # 可选：模板和静态资源
+└── README.md             # 可选：Skill 说明
+```
+
+---
+
 # 执行约束
 
 禁止：
@@ -97,6 +120,10 @@ eval_strategy:
 必须：
 - 必须事项1
 - 必须事项2
+- 使用标准化的 evals/ 目录结构
+- 使用标准化的 workflows/ 目录结构
+- Eval 测试用例必须使用 JSON 格式
+- 工作流定义必须使用 YAML 格式
 
 ---
 

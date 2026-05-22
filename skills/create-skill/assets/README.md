@@ -41,43 +41,48 @@ assets/
 
 ### eval-template.md
 
-**用途**：定义 Skill 的 Eval 测试用例
+**用途**：Eval 测试用例模板（引导使用 JSON 格式）
 
 **包含内容**：
-- Trigger Eval：应该/不应该触发的情况
-- Success Eval：正确输出示例和测试用例
-- Failure Eval：失败案例和处理
-- Adversarial Eval：对抗性测试（Prompt Injection、模糊输入、幻觉诱导等）
+- 标准化 Eval 文件结构说明
+- trigger_cases.json 模板
+- success_cases.json 模板
+- failure_cases.json 模板
+- benchmarks.json 模板
+- Adversarial Eval 集成方式
 
 **使用场景**：
-- 为新 Skill 定义完整的 Eval 测试
+- 了解 Eval 的 JSON 格式规范
+- 参考 JSON 模板创建 Eval 文件
 - 遵循测试优先（Test First）原则
 
-**Eval 类型**：
-1. **Trigger Eval**：验证触发条件
-2. **Success Eval**：验证成功场景
-3. **Failure Eval**：验证失败场景
-4. **Adversarial Eval**：验证安全性和鲁棒性
+**重要提示**：
+- Eval 测试用例必须使用 JSON 格式
+- 存储在 `evals/` 目录下
+- 参考模板了解具体格式要求
 
 ---
 
 ### workflow-template.md
 
-**用途**：定义 Skill 的工作流和状态机
+**用途**：工作流定义模板（引导使用 YAML 格式）
 
 **包含内容**：
-- Mermaid 工作流图
-- 状态机定义（状态、转换、动作）
-- 执行步骤说明
+- 标准化工作流文件结构说明
+- state-machine.yaml 模板
+- 状态机定义（状态、转换、条件、动作）
+- 错误处理和遥测配置
+- Mermaid 工作流图（可选）
 
 **使用场景**：
-- 为 Skill 定义清晰的工作流程
-- 支持状态管理和错误处理
+- 了解工作流的 YAML 格式规范
+- 参考 YAML 模板创建工作流文件
+- 定义清晰的状态转换
 
-**状态机元素**：
-- 状态：idle、processing、success、failure
-- 转换：状态之间的触发条件和动作
-- 执行步骤：初始化、执行、完成
+**重要提示**：
+- 工作流定义必须使用 YAML 格式
+- 存储在 `workflows/state-machine.yaml`
+- 参考模板了解具体格式要求
 
 ---
 
@@ -91,13 +96,13 @@ assets/
    - 根据需求修改模板内容
 
 2. **定义 Eval 时**：
-   - 读取 `eval-template.md` 了解 Eval 类型
-   - 为每个 Skill 定义完整的测试用例
+   - 读取 `eval-template.md` 了解 JSON 格式规范
+   - 在 `evals/` 目录下创建 JSON 文件
    - 遵循测试优先原则
 
 3. **设计工作流时**：
-   - 读取 `workflow-template.md` 了解状态机模式
-   - 使用 Mermaid 图可视化工作流
+   - 读取 `workflow-template.md` 了解 YAML 格式规范
+   - 在 `workflows/` 目录下创建 state-machine.yaml
    - 定义清晰的状态转换
 
 ### 文件引用

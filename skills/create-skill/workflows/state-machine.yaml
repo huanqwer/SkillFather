@@ -1,0 +1,326 @@
+skill_name: skill-creator
+version: 1.0.0
+description: Skill 创建工作流的状态机定义
+
+states:
+  idle:
+    description: 初始状态，等待用户请求
+    on_enter:
+      - 初始化上下文
+      - 加载 Skill 规范
+    on_exit:
+      - 清理临时数据
+
+  intent_extraction:
+    description: 意图抽取阶段，分析用户真实需求
+    on_enter:
+      - 开始意图抽取
+    on_exit:
+      - 保存抽取结果
+    transitions:
+      - to: capability_abstraction
+        condition: intent_complete
+        action: proceed_to_abstraction
+      - to: idle
+        condition: no_reuse_value
+        action: stop_no_reuse
+      - to: intent_extraction
+        condition: intent_incomplete
+        action: ask_more_questions
+
+  capability_abstraction:
+    description: 能力抽象阶段，将需求转换为可复用能力
+    on_enter:
+      - 开始能力抽象
+    on_exit:
+      - 保存抽象结果
+    transitions:
+      - to: eval_definition
+        condition: abstraction_complete
+        action: proceed_to_eval
+      - to: intent_extraction
+        condition: user_conflict
+        action: revisit_intent
+      - to: idle
+        condition: abstraction_failed
+        action: stop_failed
+
+  eval_definition:
+    description: Eval 定义阶段，定义完整的测试用例
+    on_enter:
+      - 开始 Eval 定义
+    on_exit:
+      - 保存 Eval 结果
+    transitions:
+      - to: skill_generation
+        condition: eval_complete
+        action: proceed_to_generation
+      - to: idle
+        condition: eval_undefined
+        action: stop_no_eval
+
+  skill_generation:
+    description: Skill 生成阶段，生成标准化的 Skill 文件
+    on_enter:
+      - 开始 Skill 生成
+    on_exit:
+      - 保存生成结果
+    transitions:
+      - to: trigger_optimization
+        condition: generation_complete
+        action: proceed_to_optimization
+      - to: idle
+        condition: generation_failed
+        action: stop_failed
+
+  trigger_optimization:
+    description: Trigger 优化阶段，优化 description 和触发条件
+    on_enter:
+      - 开始 Trigger 优化
+    on_exit:
+      - 保存优化结果
+    transitions:
+      - to: runtime_optimization
+        condition: optimization_complete
+        action: proceed_to_runtime
+      - to: idle
+        condition: optimization_failed
+        action: stop_failed
+
+  runtime_optimization:
+    description: Runtime 优化阶段，确保支持渐进式披露
+    on_enter:
+      - 开始 Runtime 优化
+    on_exit:
+      - 保存优化结果
+    transitions:
+      - to: success
+        condition: optimization_complete
+        action: complete_success
+      - to: idle
+        condition: optimization_failed
+        action: stop_failed
+
+  success:
+    description: 成功完成状态
+    on_enter:
+      - 生成最终报告
+      - 清理资源
+    on_exit:
+      - 重置为 idle
+    transitions:
+      - to: idle
+        condition: always
+        action: reset
+
+  failure:
+    description: 失败状态
+    on_enter:
+      - 记录错误
+      - 生成错误报告
+    on_exit:
+      - 清理资源
+    transitions:
+      - to: idle
+        condition: always
+        action: reset
+
+conditions:
+  intent_complete:
+    description: 意图抽取完成，获取到完整信息
+    checks:
+      - user_goal_defined
+      - task_boundary_clear
+      - inputs_outputs_defined
+      - tools_required
+      - state_changes_defined
+      - has_reuse_value
+      - suitable_for_automation
+
+  intent_incomplete:
+    description: 意图抽取未完成，需要更多信息
+    checks:
+      - not user_goal_defined
+      - or not task_boundary_clear
+      - or not inputs_outputs_defined
+
+  no_reuse_value:
+    description: 不具备复用价值
+    checks:
+      - not has_reuse_value
+      - or not suitable_for_automation
+
+  abstraction_complete:
+    description: 能力抽象完成
+    checks:
+      - capabilities_defined
+      - workflow_nodes_defined
+      - state_machine_defined
+      - tool_interfaces_defined
+      - runtime_behavior_defined
+
+  eval_complete:
+    description: Eval 定义完成
+    checks:
+      - trigger_eval_defined
+      - success_eval_defined
+      - failure_eval_defined
+      - adversarial_eval_defined
+
+  eval_undefined:
+    description: 无法定义 Eval
+    checks:
+      - not trigger_eval_defined
+      - or not success_eval_defined
+      - or not failure_eval_defined
+      - or not adversarial_eval_defined
+
+  generation_complete:
+    description: Skill 生成完成
+    checks:
+      - skill_md_created
+      - skill_yaml_created
+      - evals_json_created
+      - workflows_yaml_created
+
+  optimization_complete:
+    description: 优化完成
+    checks:
+      - description_optimized
+      - trigger_optimized
+      - progressive_disclosure_supported
+      - lazy_loading_supported
+
+actions:
+  proceed_to_abstraction:
+    description: 进入能力抽象阶段
+    steps:
+      - 传递意图抽取结果
+      - 初始化能力抽象上下文
+
+  ask_more_questions:
+    description: 询问更多信息
+    steps:
+      - 识别缺失信息
+      - 生成相关问题
+      - 等待用户回答
+
+  stop_no_reuse:
+    description: 因不具备复用价值而停止
+    steps:
+      - 说明原因
+      - 建议替代方案
+      - 清理资源
+
+  proceed_to_eval:
+    description: 进入 Eval 定义阶段
+    steps:
+      - 传递能力抽象结果
+      - 初始化 Eval 定义上下文
+
+  revisit_intent:
+    description: 重新审视意图
+    steps:
+      - 识别冲突
+      - 生成澄清问题
+      - 等待用户确认
+
+  stop_failed:
+    description: 因失败而停止
+    steps:
+      - 记录失败原因
+      - 生成错误报告
+      - 清理资源
+
+  stop_no_eval:
+    description: 因无法定义 Eval 而停止
+    steps:
+      - 说明原因
+      - 强调测试优先原则
+      - 清理资源
+
+  proceed_to_generation:
+    description: 进入 Skill 生成阶段
+    steps:
+      - 传递 Eval 定义结果
+      - 初始化生成上下文
+
+  proceed_to_optimization:
+    description: 进入 Trigger 优化阶段
+    steps:
+      - 传递生成结果
+      - 初始化优化上下文
+
+  proceed_to_runtime:
+    description: 进入 Runtime 优化阶段
+    steps:
+      - 传递优化结果
+      - 初始化 Runtime 上下文
+
+  complete_success:
+    description: 成功完成
+    steps:
+      - 生成最终报告
+      - 验证输出完整性
+      - 清理资源
+
+  reset:
+    description: 重置到初始状态
+    steps:
+      - 清理所有上下文
+      - 重置状态变量
+
+error_handling:
+  intent_extraction:
+    - error: user_refuses_to_provide_info
+      action: stop_no_reuse
+      message: "无法获取完整信息，无法创建高质量 Skill"
+    - error: timeout
+      action: stop_failed
+      message: "意图抽取超时"
+
+  capability_abstraction:
+    - error: abstraction_too_complex
+      action: revisit_intent
+      message: "能力抽象过于复杂，建议拆分为多个 Skill"
+    - error: invalid_abstraction
+      action: stop_failed
+      message: "能力抽象无效"
+
+  eval_definition:
+    - error: eval_too_complex
+      action: stop_no_eval
+      message: "Eval 定义过于复杂，无法满足测试优先原则"
+    - error: invalid_eval
+      action: stop_no_eval
+      message: "Eval 定义无效"
+
+  skill_generation:
+    - error: file_creation_failed
+      action: stop_failed
+      message: "文件创建失败"
+    - error: invalid_format
+      action: stop_failed
+      message: "生成格式无效"
+
+  trigger_optimization:
+    - error: optimization_failed
+      action: stop_failed
+      message: "Trigger 优化失败"
+
+  runtime_optimization:
+    - error: optimization_failed
+      action: stop_failed
+      message: "Runtime 优化失败"
+
+telemetry:
+  collect:
+    - state_transitions
+    - action_executions
+    - error_occurrences
+    - latency_per_state
+    - token_usage_per_state
+  report:
+    - on_success: true
+    - on_failure: true
+    - on_state_change: false

@@ -1,0 +1,90 @@
+{
+  "skill_name": "skill-creator",
+  "eval_type": "success",
+  "description": "验证 Skill 在正常情况下的正确输出",
+  "test_cases": [
+    {
+      "id": "success-001",
+      "description": "创建 PDF 处理 skill",
+      "input": {
+        "task_description": "创建一个 PDF 处理的 skill，需要能够提取文本、合并 PDF",
+        "expected_outputs": ["SKILL.md", "skill.yaml", "eval suite", "workflow definition"],
+        "constraints": ["符合 Skill 规范", "测试优先"],
+        "runtime_environment": "Python 3.12+"
+      },
+      "expected_workflow": [
+        "intent_extraction",
+        "capability_abstraction",
+        "eval_definition",
+        "skill_generation",
+        "trigger_optimization",
+        "runtime_optimization"
+      ],
+      "expected_outputs": {
+        "SKILL.md": "包含完整的 YAML Frontmatter 和 Markdown Body",
+        "skill.yaml": "机器可读的配置文件",
+        "eval_suite": "包含 Trigger、Success、Failure、Adversarial Eval",
+        "workflow_definition": "包含状态机和工作流图"
+      },
+      "success_criteria": [
+        "意图抽取：询问用户目标、任务边界、输入输出、工具需求",
+        "能力抽象：将需求转换为可复用能力、工作流节点、状态机",
+        "定义 Eval：生成完整的 Eval 测试用例",
+        "生成 Skill：创建标准化的目录结构和文件",
+        "优化 Trigger：优化 description 和触发条件",
+        "Runtime 优化：确保支持渐进式披露"
+      ]
+    },
+    {
+      "id": "success-002",
+      "description": "创建代码审查 skill",
+      "input": {
+        "task_description": "创建一个代码审查 skill，能够检查代码质量、安全性、性能",
+        "expected_outputs": ["SKILL.md", "skill.yaml", "eval suite"],
+        "constraints": ["支持多种编程语言", "可配置规则"],
+        "runtime_environment": "Any"
+      },
+      "expected_workflow": [
+        "intent_extraction",
+        "capability_abstraction",
+        "eval_definition",
+        "skill_generation",
+        "trigger_optimization",
+        "runtime_optimization"
+      ],
+      "expected_outputs": {
+        "SKILL.md": "包含代码审查相关的触发条件和评估标准",
+        "skill.yaml": "定义代码审查的工作流和状态机",
+        "eval_suite": "包含代码正确性、安全性、性能的测试用例"
+      }
+    },
+    {
+      "id": "success-003",
+      "description": "创建数据分析 skill",
+      "input": {
+        "task_description": "创建一个数据分析 skill，能够处理 CSV、JSON 数据，生成可视化报告",
+        "expected_outputs": ["SKILL.md", "skill.yaml", "eval suite", "workflow definition"],
+        "constraints": ["支持多种数据格式", "生成可视化"],
+        "runtime_environment": "Python with pandas, matplotlib"
+      },
+      "expected_workflow": [
+        "intent_extraction",
+        "capability_abstraction",
+        "eval_definition",
+        "skill_generation",
+        "trigger_optimization",
+        "runtime_optimization"
+      ],
+      "expected_outputs": {
+        "SKILL.md": "包含数据处理的触发条件和评估标准",
+        "skill.yaml": "定义数据处理的工作流",
+        "eval_suite": "包含数据准确性、性能的测试用例"
+      }
+    }
+  ],
+  "success_criteria": {
+    "completion_rate": ">= 90%",
+    "output_quality": "符合 Skill 规范",
+    "workflow_completeness": "6 个步骤全部执行"
+  }
+}

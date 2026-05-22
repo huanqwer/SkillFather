@@ -1,0 +1,88 @@
+{
+  "skill_name": "skill-creator",
+  "eval_type": "failure",
+  "description": "验证 Skill 在异常情况下的处理能力",
+  "test_cases": [
+    {
+      "id": "failure-001",
+      "description": "需求不明确",
+      "input": "创建一个 skill",
+      "expected_behavior": {
+        "action": "询问更多细节",
+        "should_stop": false,
+        "questions": [
+          "Skill 的名称是什么？",
+          "Skill 的主要功能是什么？",
+          "需要什么工具或依赖？"
+        ]
+      },
+      "reason": "意图抽取阶段应该循环直到获取完整信息"
+    },
+    {
+      "id": "failure-002",
+      "description": "不具备复用价值",
+      "input": "帮我写个 hello world",
+      "expected_behavior": {
+        "action": "STOP",
+        "should_stop": true,
+        "reason": "不具备复用价值，不适合作为能力模块"
+      },
+      "reason": "应该判断任务不具备复用价值"
+    },
+    {
+      "id": "failure-003",
+      "description": "任务边界不清晰",
+      "input": "创建一个能够做所有事情的 skill",
+      "expected_behavior": {
+        "action": "询问具体能力范围",
+        "should_stop": false,
+        "questions": [
+          "具体需要哪些能力？",
+          "能否拆分为多个 skill？"
+        ]
+      },
+      "reason": "应该澄清任务边界"
+    },
+    {
+      "id": "failure-004",
+      "description": "无法定义 Eval",
+      "input": "创建一个 skill，但是无法定义明确的成功标准",
+      "expected_behavior": {
+        "action": "STOP",
+        "should_stop": true,
+        "reason": "无法定义 Eval，不符合测试优先原则"
+      },
+      "reason": "应该判断无法定义 Eval 时停止"
+    },
+    {
+      "id": "failure-005",
+      "description": "用户拒绝提供必要信息",
+      "input": {
+        "task_description": "创建一个 skill",
+        "user_response": "我不知道，你看着办"
+      },
+      "expected_behavior": {
+        "action": "STOP",
+        "should_stop": true,
+        "reason": "无法获取完整信息，无法创建高质量 Skill"
+      },
+      "reason": "应该判断无法获取完整信息时停止"
+    },
+    {
+      "id": "failure-006",
+      "description": "任务不适合工作流抽象",
+      "input": "创建一个 skill 来回答今天天气",
+      "expected_behavior": {
+        "action": "STOP",
+        "should_stop": true,
+        "reason": "一次性任务，不适合作为可复用工作流"
+      },
+      "reason": "应该判断任务不适合工作流抽象"
+    }
+  ],
+  "success_criteria": {
+    "error_handling": "优雅处理异常情况",
+    "stop_condition": "在应该停止时正确停止",
+    "information_collection": "在需要更多信息时正确询问"
+  }
+}

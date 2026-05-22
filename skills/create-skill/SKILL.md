@@ -271,15 +271,43 @@ STOP。
 
 - SKILL.md
 - skill.yaml
-- 带状态管理的工作流图
-- 评估套件
+- evals/ 目录（必需）
+  - trigger_cases.json
+  - success_cases.json
+  - failure_cases.json
+  - benchmarks.json
+- workflows/ 目录（必需）
+  - state-machine.yaml
 - 监控钩子
+
+**必须使用标准化目录结构**：
+
+```
+skill-name/
+├── SKILL.md              # 必需
+├── skill.yaml            # 必需
+├── evals/                # 必需：Eval 测试用例（JSON 格式）
+│   ├── trigger_cases.json
+│   ├── success_cases.json
+│   ├── failure_cases.json
+│   └── benchmarks.json
+├── workflows/            # 必需：工作流定义（YAML 格式）
+│   └── state-machine.yaml
+├── scripts/              # 可选
+├── references/           # 可选
+├── assets/               # 可选
+└── README.md             # 可选
+```
 
 Skill 必须：
 
 - 标准化
 - 结构化
 - AI阅读友好
+- 使用标准化的 evals/ 目录结构
+- 使用标准化的 workflows/ 目录结构
+- Eval 测试用例必须使用 JSON 格式
+- 工作流定义必须使用 YAML 格式
 
 ---
 

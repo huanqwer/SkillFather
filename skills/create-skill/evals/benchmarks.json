@@ -1,0 +1,93 @@
+{
+  "skill_name": "skill-creator",
+  "eval_type": "benchmark",
+  "description": "Skill 性能基准测试",
+  "performance_metrics": {
+    "token_usage": {
+      "soft_limit": 12000,
+      "hard_limit": 24000,
+      "target": "< 10000",
+      "unit": "tokens"
+    },
+    "latency": {
+      "target": 8000,
+      "p50": "< 5000",
+      "p95": "< 10000",
+      "p99": "< 15000",
+      "unit": "ms"
+    },
+    "completion_rate": {
+      "target": ">= 90%",
+      "minimum": ">= 85%"
+    },
+    "hallucination_rate": {
+      "target": "<= 3%",
+      "maximum": "<= 5%"
+    }
+  },
+  "quality_metrics": {
+    "trigger_accuracy": {
+      "target": ">= 92%",
+      "minimum": ">= 85%"
+    },
+    "output_completeness": {
+      "target": "100%",
+      "required_files": [
+        "SKILL.md",
+        "skill.yaml",
+        "evals/trigger_cases.json",
+        "evals/success_cases.json",
+        "evals/failure_cases.json",
+        "workflows/state-machine.yaml"
+      ]
+    },
+    "spec_compliance": {
+      "target": "100%",
+      "checks": [
+        "name 字段符合规范",
+        "description 字段符合规范",
+        "目录名与 name 字段一致",
+        "YAML Frontmatter 格式正确"
+      ]
+    }
+  },
+  "test_scenarios": [
+    {
+      "id": "bench-001",
+      "description": "简单 Skill 创建",
+      "complexity": "low",
+      "expected_tokens": "< 5000",
+      "expected_latency": "< 3000"
+    },
+    {
+      "id": "bench-002",
+      "description": "中等复杂度 Skill 创建",
+      "complexity": "medium",
+      "expected_tokens": "< 10000",
+      "expected_latency": "< 8000"
+    },
+    {
+      "id": "bench-003",
+      "description": "高复杂度 Skill 创建",
+      "complexity": "high",
+      "expected_tokens": "< 20000",
+      "expected_latency": "< 12000"
+    }
+  ],
+  "regression_tests": {
+    "baseline": {
+      "version": "1.0.0",
+      "date": "2026-05-22",
+      "metrics": {
+        "avg_tokens": 8000,
+        "avg_latency": 6000,
+        "completion_rate": "95%"
+      }
+    },
+    "thresholds": {
+      "token_increase": "< 10%",
+      "latency_increase": "< 15%",
+      "completion_rate_decrease": "< 5%"
+    }
+  }
+}

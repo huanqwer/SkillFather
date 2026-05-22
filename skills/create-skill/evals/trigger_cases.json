@@ -1,0 +1,84 @@
+{
+  "skill_name": "skill-creator",
+  "eval_type": "trigger",
+  "description": "验证 Skill 的触发条件",
+  "should_trigger": [
+    {
+      "id": "trigger-001",
+      "description": "用户明确表示创建 skill",
+      "input": "创建一个 PDF 处理的 skill",
+      "expected": "trigger",
+      "category": "skill-generation"
+    },
+    {
+      "id": "trigger-002",
+      "description": "用户提到构建 agent 能力",
+      "input": "我需要构建一个可复用的 AI 工作流来处理数据",
+      "expected": "trigger",
+      "category": "agent-engineering"
+    },
+    {
+      "id": "trigger-003",
+      "description": "用户询问如何创建符合规范的 Skill",
+      "input": "如何按照 Skill 规范创建一个标准的 skill？",
+      "expected": "trigger",
+      "category": "skill-generation"
+    },
+    {
+      "id": "trigger-004",
+      "description": "用户需要可复用工作流",
+      "input": "创建一个可复用的工作流",
+      "expected": "trigger",
+      "category": "workflow-engineering"
+    },
+    {
+      "id": "trigger-005",
+      "description": "用户需要能力抽象",
+      "input": "将这个任务抽象为一个能力模块",
+      "expected": "trigger",
+      "category": "agent-engineering"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "id": "no-trigger-001",
+      "description": "一次性简单提问",
+      "input": "你好",
+      "expected": "no_trigger",
+      "reason": "普通聊天"
+    },
+    {
+      "id": "no-trigger-002",
+      "description": "单次文本生成",
+      "input": "写一个 Python 函数来排序数组",
+      "expected": "no_trigger",
+      "reason": "不具备复用价值"
+    },
+    {
+      "id": "no-trigger-003",
+      "description": "直接询问技术问题",
+      "input": "什么是 PDF？",
+      "expected": "no_trigger",
+      "reason": "知识问答，非能力创建"
+    },
+    {
+      "id": "no-trigger-004",
+      "description": "普通聊天",
+      "input": "今天天气如何",
+      "expected": "no_trigger",
+      "reason": "日常对话"
+    },
+    {
+      "id": "no-trigger-005",
+      "description": "一次性简单任务",
+      "input": "帮我写个 hello world",
+      "expected": "no_trigger",
+      "reason": "不具备复用价值"
+    }
+  ],
+  "success_criteria": {
+    "trigger_accuracy": ">= 92%",
+    "false_positive_rate": "<= 5%",
+    "false_negative_rate": "<= 8%"
+  }
+}
