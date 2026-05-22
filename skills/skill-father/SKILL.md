@@ -1,5 +1,5 @@
 ---
-name: skill-creator
+name: skill-father
 
 version: 1.0.0
 
