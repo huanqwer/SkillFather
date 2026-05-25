@@ -1,7 +1,66 @@
 # SkillFather
 创建第一个Skill之前，你需要一个能创建Skill的Skill。
 
+使用此skill你能快速得到几乎是最佳实践标准结构的skill：
+
+```markdown
+---
+name: skill-name
+description: skill描述
+version: 1.0.0
+author: author
+license: license
+---
+
+# Skill名称
+
+## Overview
+skill用来做什么的overview
+
+## 触发时机
+skill调用的时机
+
+## 适用文件类型（可选）
+skill对应的文件类型
+
+## 标准流程
+skill的标准SOP
+
+## 状态流转
+skill的状态流转（state machine）
+
+## 参考模板（可选）
+skill的参考模板
+
+## 必要脚本资源（可选）
+skill的必要脚本资源
+```
+
+并且该skill会严格遵守以下原则：
+
+- **保持SOP中可变的部分和宏观描述**：如skill的名称、描述、调用时机、文件类型、提示词标准模板
+- **固定可复用的部分**：将标准化流程中不变的部分脚本化或资源化，供Agent直接调用
+- **测试优先**：推荐使用TDD思想让验证跑在最高优先级，这是AI时代代码可信度验证最高的方法
+
 如果对于本项目的原理感兴趣，可以看我博客里的本项目万字解析 https://blog.csdn.net/itkfdektxa/article/details/161311452
+
+## 快速开始
+
+### 直接复制`create-skill`技能到你的项目
+
+如果你已经创建了自己的项目，你可以复制 `skills/create-skill` 文件夹到你的工程 ` skills`文件夹下
+
+或者你也可以使用命令行
+
+```
+git clone https://github.com/huanqwer/SkillFather.git
+cd SkillFather
+cp skills/create-skill {yourSkillsDir}
+```
+
+然后在Agent对话框中告诉AI你想要创建什么样的技能
+
+不建议在本工程里这么做，因为有你的工程上下文AI会工作的更好
 
 ## 核心思想
 当我耗费大量时间编写了几十个Skill之后，我意识到，我需要将我编写Skill的经验，抽象成一个通用且能被复用的skill框架。
