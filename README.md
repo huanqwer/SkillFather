@@ -3,37 +3,21 @@
 
 使用此skill你能快速得到几乎是最佳实践标准结构的skill：
 
-```markdown
----
-name: skill-name
-description: skill描述
-version: 1.0.0
-author: author
-license: license
----
-
-# Skill名称
-
-## Overview
-skill用来做什么的overview
-
-## 触发时机
-skill调用的时机
-
-## 适用文件类型（可选）
-skill对应的文件类型
-
-## 标准流程
-skill的标准SOP
-
-## 状态流转
-skill的状态流转（state machine）
-
-## 参考模板（可选）
-skill的参考模板
-
-## 必要脚本资源（可选）
-skill的必要脚本资源
+```
+skill-name/
+├── SKILL.md              # 必需
+├── skill.yaml            # 必需
+├── evals/                # 必需：Eval 测试用例（JSON 格式）
+│   ├── trigger_cases.json
+│   ├── success_cases.json
+│   ├── failure_cases.json
+│   └── benchmarks.json
+├── workflows/            # 必需：工作流定义（YAML 格式）
+│   └── state-machine.yaml
+├── scripts/              # 必需：可执行脚本
+├── references/           # 必需：参考文档
+├── assets/               # 必需：模板和静态资源
+└── README.md             # 可选：Skill 说明
 ```
 
 并且该skill会严格遵守以下原则：
