@@ -1,14 +1,15 @@
-name: skill-creator
+name: skill-father
 version: 1.0.0
 description: |
-  一个面向 AI Agent 的通用型、标准化、测试优先（Test-First）、
+  一个面向 AI Agent 的通用型、标准化、规格驱动（SDD）、测试驱动（TDD）、
   可组合、可观测、可持续优化的 Skill 创建框架。
 
-  该 Skill 用于将用户需求抽象为：
-  - 可复用能力
-  - 可触发工作流
-  - 可评估执行单元
-  - 可持续演化的 Agent Skill
+  该 Skill 用于将用户需求抽象为可复用能力、可触发工作流、可评估执行单元、
+  可持续演化的 Agent Skill。
+
+  适用于：创建 skill、生成技能、构建 agent 能力、workflow 自动化、
+  AI 工作流设计、可复用工作流、能力抽象、构建 agent 系统、
+  优化 skill、改进技能、完善 skill、更新技能。
 
 category:
   - agent-engineering
@@ -28,6 +29,10 @@ trigger:
     - 可复用工作流
     - 能力抽象
     - 构建 agent 系统
+    - 优化 skill
+    - 改进技能
+    - 完善 skill
+    - 更新技能
 
   should_trigger_when:
     - 用户希望构建可复用 AI 工作流
@@ -35,6 +40,9 @@ trigger:
     - 用户需要标准化能力模块
     - 用户需要 Agent 自动执行任务
     - 用户需要测试驱动的 AI 能力设计
+    - 用户希望优化已有 Skill
+    - 用户需要改进现有技能
+    - 用户需要完善 Skill 结构
 
   should_not_trigger_when:
     - 一次性简单提问
@@ -98,8 +106,11 @@ workflow:
     - name: capability_abstraction
       description: 将用户需求转换为可复用能力
       required: true
+    - name: constraint_definition
+      description: 定义强制约束（SDD，JSON spec）
+      required: true
     - name: eval_definition
-      description: 定义 Eval（强制步骤）
+      description: 定义 Eval（TDD，JSON 测试用例）
       required: true
     - name: skill_generation
       description: 生成 Skill
@@ -137,11 +148,17 @@ workflow:
 artifacts:
   - SKILL.md
   - skill.yaml
+  - spec/constraints.json
+  - spec/schema.json
+  - spec/transitions.json
   - workflow_graph
   - eval_suite
   - telemetry_hooks
 
 directories:
+  - spec/
+  - evals/
+  - workflows/
   - scripts/
   - references/
   - assets/

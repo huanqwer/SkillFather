@@ -36,6 +36,9 @@ def create_skill(skill_name: str, description: str, author: str, output_dir: Pat
     (skill_dir / "scripts").mkdir()
     (skill_dir / "references").mkdir()
     (skill_dir / "assets").mkdir()
+    (skill_dir / "spec").mkdir()
+    (skill_dir / "evals").mkdir()
+    (skill_dir / "workflows").mkdir()
     
     # 替换占位符
     replacements = {
@@ -52,28 +55,8 @@ def create_skill(skill_name: str, description: str, author: str, output_dir: Pat
         # 如果模板不存在，创建基本结构
         basic_skill = f"""---
 name: {skill_name}
-
-version: 1.0.0
-
 description: |
   {description}
-
-category:
-  - category-name
-
-author: {author}
-
-trigger:
-  semantic:
-    - 触发关键词1
-    - 触发关键词2
-
-  should_trigger_when:
-    - 应该触发的情况1
-
-  should_not_trigger_when:
-    - 不应该触发的情况1
-
 ---
 
 # 目标
@@ -84,7 +67,27 @@ trigger:
 
 # 核心原则
 
-列出该 Skill 遵循的核心原则。
+1. 规格驱动开发（Spec Driven Development, SDD）
+2. 测试驱动开发（Test Driven Development, TDD）
+3. JSON 强制约束优先于自然语言提示词
+4. Skill 模块化
+5. Skill 可组合
+
+---
+
+# 强制约束
+
+强制约束使用 JSON 格式定义，存储在 `spec/` 目录下。
+
+JSON 相较于自然语言提示词具有更强的约束力：机器可解析、无歧义、可程序化验证、可组合执行。
+
+本 Skill 的强制约束定义在以下 JSON spec 文件中：
+
+- **行为约束**：`spec/constraints.json` — 定义 must / must_not / preconditions / postconditions
+- **输入输出 Schema**：`spec/schema.json` — 定义 input_schema 和 output_schema
+- **状态转换规则**：`spec/transitions.json` — 定义状态机转换规则（与 workflows/state-machine.yaml 对应）
+
+SKILL.md 中的自然语言描述仅为人类可读的补充说明，以 `spec/` 下的 JSON 文件为准。
 
 ---
 
@@ -100,9 +103,14 @@ trigger:
 
 禁止：
 - 禁止事项1
+- 跳过强制约束定义（SDD）
+- 跳过 Eval 定义（TDD）
+- 使用自然语言替代 JSON 定义 spec 和 evals
 
 必须：
 - 必须事项1
+- SDD：先定义 JSON 强制约束（spec/），再生成 Skill
+- TDD：先定义 JSON Eval（evals/），再生成 Skill
 
 ---
 
@@ -115,6 +123,9 @@ trigger:
 # 成功标准
 
 定义成功的标准。
+
+- 强制约束已定义（spec/ JSON 文件完整且有效）
+- Eval 已定义（evals/ JSON 文件完整且有效）
 """
         (skill_dir / "SKILL.md").write_text(basic_skill, encoding='utf-8')
     

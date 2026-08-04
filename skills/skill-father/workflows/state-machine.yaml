@@ -35,9 +35,9 @@ states:
     on_exit:
       - 保存抽象结果
     transitions:
-      - to: eval_definition
+      - to: constraint_definition
         condition: abstraction_complete
-        action: proceed_to_eval
+        action: proceed_to_constraint_definition
       - to: intent_extraction
         condition: user_conflict
         action: revisit_intent
@@ -45,8 +45,23 @@ states:
         condition: abstraction_failed
         action: stop_failed
 
+  constraint_definition:
+    description: 强制约束定义阶段，使用 JSON 格式定义 Skill 的行为规格（SDD）
+    on_enter:
+      - 开始强制约束定义
+      - 创建 spec/ 目录
+    on_exit:
+      - 保存约束定义结果
+    transitions:
+      - to: eval_definition
+        condition: constraint_complete
+        action: proceed_to_eval
+      - to: idle
+        condition: constraint_undefined
+        action: stop_no_constraint
+
   eval_definition:
-    description: Eval 定义阶段，定义完整的测试用例
+    description: Eval 定义阶段，定义完整的测试用例（TDD）
     on_enter:
       - 开始 Eval 定义
     on_exit:
@@ -159,8 +174,24 @@ conditions:
       - tool_interfaces_defined
       - runtime_behavior_defined
 
+  constraint_complete:
+    description: 强制约束定义完成（SDD）
+    checks:
+      - spec_dir_created
+      - constraints_json_created
+      - schema_json_created
+      - transitions_json_created
+      - constraints_validated
+
+  constraint_undefined:
+    description: 无法定义强制约束
+    checks:
+      - not constraints_json_created
+      - or not schema_json_created
+      - or not transitions_json_created
+
   eval_complete:
-    description: Eval 定义完成
+    description: Eval 定义完成（TDD）
     checks:
       - trigger_eval_defined
       - success_eval_defined
@@ -180,6 +211,7 @@ conditions:
     checks:
       - skill_md_created
       - skill_yaml_created
+      - spec_json_created
       - evals_json_created
       - workflows_yaml_created
 
@@ -212,10 +244,17 @@ actions:
       - 建议替代方案
       - 清理资源
 
+  proceed_to_constraint_definition:
+    description: 进入强制约束定义阶段
+    steps:
+      - 传递能力抽象结果
+      - 初始化约束定义上下文
+      - 创建 spec/ 目录
+
   proceed_to_eval:
     description: 进入 Eval 定义阶段
     steps:
-      - 传递能力抽象结果
+      - 传递约束定义结果
       - 初始化 Eval 定义上下文
 
   revisit_intent:
@@ -232,11 +271,18 @@ actions:
       - 生成错误报告
       - 清理资源
 
+  stop_no_constraint:
+    description: 因无法定义强制约束而停止
+    steps:
+      - 说明原因
+      - 强调 SDD 原则
+      - 清理资源
+
   stop_no_eval:
     description: 因无法定义 Eval 而停止
     steps:
       - 说明原因
-      - 强调测试优先原则
+      - 强调 TDD 原则
       - 清理资源
 
   proceed_to_generation:
@@ -286,6 +332,14 @@ error_handling:
     - error: invalid_abstraction
       action: stop_failed
       message: "能力抽象无效"
+
+  constraint_definition:
+    - error: constraint_conflict
+      action: revisit_intent
+      message: "强制约束与用户意图冲突"
+    - error: invalid_constraint
+      action: stop_no_constraint
+      message: "强制约束定义无效"
 
   eval_definition:
     - error: eval_too_complex

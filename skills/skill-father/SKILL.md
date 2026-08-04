@@ -1,106 +1,15 @@
 ---
 name: skill-father
-
-version: 1.0.0
-
 description: |
-  一个面向 AI Agent 的通用型、标准化、测试优先（Test-First）、
+  一个面向 AI Agent 的通用型、标准化、规格驱动（SDD）、测试驱动（TDD）、
   可组合、可观测、可持续优化的 Skill 创建框架。
 
-  该 Skill 用于将用户需求抽象为：
-  - 可复用能力
-  - 可触发工作流
-  - 可评估执行单元
-  - 可持续演化的 Agent Skill
+  该 Skill 用于将用户需求抽象为可复用能力、可触发工作流、可评估执行单元、
+  可持续演化的 Agent Skill。
 
-category:
-  - agent-engineering
-  - skill-generation
-  - eval-driven-development
-  - workflow-engineering
-
-author: gavin.qin
-
-trigger:
-  semantic:
-    - 创建 skill
-    - 生成技能
-    - 构建 agent 能力
-    - workflow 自动化
-    - AI 工作流设计
-    - 可复用工作流
-    - 能力抽象
-    - 构建 agent 系统
-    - 优化 skill
-    - 改进技能
-    - 完善 skill
-    - 更新技能
-
-  should_trigger_when:
-    - 用户希望构建可复用 AI 工作流
-    - 用户描述重复性任务
-    - 用户需要标准化能力模块
-    - 用户需要 Agent 自动执行任务
-    - 用户需要测试驱动的 AI 能力设计
-    - 用户希望优化已有 Skill
-    - 用户需要改进现有技能
-    - 用户需要完善 Skill 结构
-
-  should_not_trigger_when:
-    - 一次性简单提问
-    - 普通聊天
-    - 单次文本生成
-    - 不具备复用价值的需求
-
-inputs:
-  - task_description
-  - expected_outputs
-  - constraints
-  - runtime_environment
-
-outputs:
-  - structured_skill_package
-  - eval_suite
-  - workflow_definition
-  - trigger_specification
-
-dependencies:
-  - retrieval-system
-  - eval-engine
-  - telemetry-runtime
-
-token_budget:
-  soft_limit: 12000
-  hard_limit: 24000
-
-latency_budget:
-  target_ms: 8000
-
-risk_level: medium
-
-observability:
-  enabled: true
-
-  collect:
-    - trigger_accuracy
-    - completion_rate
-    - hallucination_rate
-    - token_usage
-    - latency
-    - recovery_attempts
-
-eval_strategy:
-  methodology:
-    - trigger-eval
-    - execution-eval
-    - regression-eval
-    - adversarial-eval
-
-  success_criteria:
-    trigger_accuracy: ">= 92%"
-    completion_rate: ">= 90%"
-    hallucination_rate: "<= 3%"
-
+  适用于：创建 skill、生成技能、构建 agent 能力、workflow 自动化、
+  AI 工作流设计、可复用工作流、能力抽象、构建 agent 系统、
+  优化 skill、改进技能、完善 skill、更新技能。
 ---
 
 # 目标
@@ -136,14 +45,30 @@ eval_strategy:
 
 必须遵循以下原则：
 
-1. 测试优先（Test First）
-2. Eval 驱动开发（Eval Driven Development）
-3. Skill 模块化
-4. Skill 可组合
-5. Runtime Context Injection
-6. Progressive Disclosure
-7. Trigger Optimization
-8. Telemetry First
+1. 规格驱动开发（Spec Driven Development, SDD）
+2. 测试驱动开发（Test Driven Development, TDD）
+3. JSON 强制约束优先于自然语言提示词
+4. Skill 模块化
+5. Skill 可组合
+6. Runtime Context Injection
+7. Progressive Disclosure
+8. Trigger Optimization
+9. Telemetry First
+
+### 为什么 JSON > Prompt？
+
+JSON 相较于自然语言提示词具有更强的约束力：
+
+- **机器可解析**：JSON 是结构化数据，可被程序直接解析和验证，不依赖 LLM 的"理解"
+- **无歧义性**：自然语言存在多重解读，JSON 的字段和值是精确的
+- **可程序化验证**：JSON spec 可以通过脚本自动校验，Prompt 只能靠人工审查
+- **可组合执行**：JSON 约束可以被 runtime 直接加载和执行，Prompt 只能被"建议遵守"
+- **可量化测试**：JSON evals 可以通过断言精确判断通过/失败，Prompt evals 依赖主观判断
+
+因此：
+- **Spec（规格）必须使用 JSON**：定义 Skill 的行为约束、输入输出 schema、状态机规则
+- **Evals（测试）必须使用 JSON**：定义测试用例、预期结果、成功标准
+- **SKILL.md 中的"强制约束"模块必须引用 JSON spec 文件**：自然语言描述仅作为人类可读的补充说明
 
 你必须读取https://agentskills.io/specification 上最新的Skill的规范，这能帮助你创建出最新且符合规范的skills。
 
@@ -253,7 +178,123 @@ STOP。
 
 ---
 
-## Step 3：定义 Eval（强制步骤）
+## Step 3：定义强制约束（Spec Driven Development）
+
+强制约束是 Skill 的行为规格（Specification），使用 JSON 格式定义。
+
+**为什么需要强制约束？**
+
+自然语言 Prompt 是"建议"——LLM 可能遵守也可能忽略。
+JSON Spec 是"约束"——可以被 runtime 解析、验证、强制执行。
+
+强制约束定义 Skill 的：
+- 行为边界（做什么、不做什么）
+- 输入输出 Schema
+- 状态转换规则
+- 执行前置条件和后置条件
+- 禁止行为列表
+
+必须生成 `spec/` 目录，包含以下 JSON 文件：
+
+### spec/constraints.json
+
+定义 Skill 的强制行为约束：
+
+```json
+{
+  "skill_name": "skill-name",
+  "version": "1.0.0",
+  "constraints": {
+    "must": [
+      {
+        "id": "must-001",
+        "rule": "必须先验证输入再执行",
+        "validation": "input_validation_required"
+      }
+    ],
+    "must_not": [
+      {
+        "id": "must-not-001",
+        "rule": "禁止跳过输入验证",
+        "validation": "no_skip_validation"
+      }
+    ],
+    "preconditions": [
+      {
+        "id": "pre-001",
+        "condition": "用户意图已确认",
+        "check": "intent_confirmed"
+      }
+    ],
+    "postconditions": [
+      {
+        "id": "post-001",
+        "condition": "输出包含所有必需字段",
+        "check": "output_complete"
+      }
+    ]
+  }
+}
+```
+
+### spec/schema.json
+
+定义输入输出的 JSON Schema：
+
+```json
+{
+  "skill_name": "skill-name",
+  "input_schema": {
+    "type": "object",
+    "required": ["task_description"],
+    "properties": {
+      "task_description": { "type": "string" }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": ["result"],
+    "properties": {
+      "result": { "type": "string" }
+    }
+  }
+}
+```
+
+### spec/transitions.json
+
+定义状态转换规则（与 workflows/state-machine.yaml 对应的机器可读版本）：
+
+```json
+{
+  "skill_name": "skill-name",
+  "transitions": [
+    {
+      "from": "idle",
+      "to": "processing",
+      "condition": "request_received",
+      "required_checks": ["input_valid"]
+    }
+  ]
+}
+```
+
+**强制要求**：
+- spec/ 目录下的所有文件必须使用 JSON 格式
+- constraints.json 是必需文件
+- schema.json 是必需文件
+- transitions.json 是必需文件
+- SKILL.md 中的"强制约束"模块必须引用这些 JSON spec 文件
+
+如果无法定义强制约束：
+
+STOP。
+
+不要生成 Skill。
+
+---
+
+## Step 4：定义 Eval（Test Driven Development）
 
 Eval 测试用例模板：`assets/eval-template.md`
 Eval 示例：`evals/trigger_cases.json`, `evals/success_cases.json`, `evals/failure_cases.json`, `evals/benchmarks.json`
@@ -302,16 +343,26 @@ STOP。
 
 ---
 
-## Step 4：生成 Skill
+## Step 5：生成 Skill
 
 SKILL.md 模板：`assets/skill-template.md`
 工作流模板：`assets/workflow-template.md`
 
+**SKILL.md frontmatter 规范**：
+- 只包含 `name` 和 `description` 两个字段
+- 遵循 [Agent Skills Specification](https://agentskills.io/specification) 行业标准
+- 不要在 frontmatter 中添加 version、category、author、trigger、inputs、outputs 等冗余字段
+- 这些元信息应放在 `skill.yaml` 中
+
 生成：
 
-- SKILL.md
-- skill.yaml
-- evals/ 目录（必需，即使为空也要创建）
+- SKILL.md（frontmatter 只含 name 和 description，必须包含"强制约束"模块，引用 spec/ 下的 JSON 文件）
+- skill.yaml（机器可读配置，包含 trigger、inputs、outputs、eval_strategy 等元信息）
+- spec/ 目录（必需，SDD 强制约束）
+  - constraints.json
+  - schema.json
+  - transitions.json
+- evals/ 目录（必需，TDD 测试用例，JSON 格式）
   - trigger_cases.json
   - success_cases.json
   - failure_cases.json
@@ -327,9 +378,13 @@ SKILL.md 模板：`assets/skill-template.md`
 
 ```
 skill-name/
-├── SKILL.md              # 必需
-├── skill.yaml            # 必需
-├── evals/                # 必需：Eval 测试用例（JSON 格式）
+├── SKILL.md              # 必需：Skill 主文件（必须包含"强制约束"模块）
+├── skill.yaml            # 必需：机器可读配置
+├── spec/                 # 必需：强制约束（SDD，JSON 格式）
+│   ├── constraints.json  #   行为约束：must / must_not / preconditions / postconditions
+│   ├── schema.json       #   输入输出 JSON Schema
+│   └── transitions.json  #   状态转换规则（机器可读）
+├── evals/                # 必需：Eval 测试用例（TDD，JSON 格式）
 │   ├── trigger_cases.json
 │   ├── success_cases.json
 │   ├── failure_cases.json
@@ -343,12 +398,13 @@ skill-name/
 ```
 
 **重要**：
-- 所有标准目录（evals/、workflows/、scripts/、references/、assets/）必须在创建 Skill 时被创建
+- 所有标准目录（spec/、evals/、workflows/、scripts/、references/、assets/）必须在创建 Skill 时被创建
 - 即使目录暂时为空，也要创建目录结构
 - 这确保了目录结构的一致性和可扩展性
 
 **SKILL.md 必须包含文件引用**：
 生成的 SKILL.md 必须在适当位置引用相关文件：
+- 强制约束部分应引用 `spec/` 目录下的 JSON 文件
 - 工作流程部分应引用 `workflows/state-machine.yaml`
 - Eval 策略部分应引用 `evals/` 目录下的 JSON 文件
 - 参考资源部分应引用 `references/` 目录下的文档
@@ -367,15 +423,18 @@ Skill 必须：
 - 标准化
 - 结构化
 - AI阅读友好
-- 使用标准化的 evals/ 目录结构
+- 使用标准化的 spec/ 目录结构（SDD 强制约束，JSON 格式）
+- 使用标准化的 evals/ 目录结构（TDD 测试用例，JSON 格式）
 - 使用标准化的 workflows/ 目录结构
+- 强制约束必须使用 JSON 格式（spec/ 目录）
 - Eval 测试用例必须使用 JSON 格式
 - 工作流定义必须使用 YAML 格式
+- SKILL.md 必须包含"强制约束"模块并引用 spec/ 下的 JSON 文件
 - SKILL.md 必须包含对相关文件的引用
 
 ---
 
-## Step 5：优化 Trigger
+## Step 6：优化 Trigger
 
 Trigger 优化指南：`references/trigger-optimization.md`
 
@@ -403,7 +462,7 @@ Trigger 优化指南：`references/trigger-optimization.md`
 
 ---
 
-## Step 6：Runtime 优化
+## Step 7：Runtime 优化
 
 必须支持：
 
@@ -426,7 +485,9 @@ Trigger 优化指南：`references/trigger-optimization.md`
 禁止：
 
 - 生成超大单体 Prompt
-- 跳过 Eval
+- 跳过强制约束定义（SDD）
+- 跳过 Eval 定义（TDD）
+- 使用自然语言替代 JSON 定义 spec 和 evals
 - 忽略 Trigger 边界
 - 忽略失败场景
 - 忽略可观测性
@@ -434,8 +495,10 @@ Trigger 优化指南：`references/trigger-optimization.md`
 
 必须：
 
+- SDD：先定义 JSON 强制约束（spec/），再生成 Skill
+- TDD：先定义 JSON Eval（evals/），再生成 Skill
+- JSON 强制约束优先于自然语言提示词
 - 模块化设计
-- Eval First
 - Trigger Optimization
 - Runtime Safety
 - Skill Composability
@@ -449,11 +512,12 @@ Trigger 优化指南：`references/trigger-optimization.md`
 
 1. Skill Summary
 2. Trigger Specification
-3. Workflow Definition
-4. Eval Suite
-5. Runtime Strategy
-6. Telemetry Plan
-7. Optimization Suggestions
+3. 强制约束（spec/ JSON 文件）
+4. Workflow Definition
+5. Eval Suite
+6. Runtime Strategy
+7. Telemetry Plan
+8. Optimization Suggestions
 
 ---
 
@@ -461,6 +525,8 @@ Trigger 优化指南：`references/trigger-optimization.md`
 
 一个成功的 Skill 必须：
 
+- 强制约束已定义（spec/ JSON 文件完整且有效）
+- Eval 已定义（evals/ JSON 文件完整且有效）
 - Trigger 正确
 - 执行稳定
 - 抗 Prompt Injection

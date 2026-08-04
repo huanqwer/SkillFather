@@ -1,8 +1,38 @@
 # Eval 最佳实践
 
+## SDD + TDD 方法论
+
+SkillFather 采用 **SDD（Spec Driven Development）+ TDD（Test Driven Development）** 双驱动开发模式：
+
+1. **SDD（规格驱动开发）**：先定义 JSON 强制约束（`spec/` 目录），明确 Skill 的行为规格
+2. **TDD（测试驱动开发）**：再定义 JSON Eval 测试用例（`evals/` 目录），明确成功标准
+3. **最后生成 Skill**：基于 spec 和 evals 生成 SKILL.md 和其他文件
+
+### 为什么 JSON > Prompt？
+
+JSON 相较于自然语言提示词具有更强的约束力：
+
+- **机器可解析**：JSON 是结构化数据，可被程序直接解析和验证，不依赖 LLM 的"理解"
+- **无歧义性**：自然语言存在多重解读，JSON 的字段和值是精确的
+- **可程序化验证**：JSON spec 可以通过脚本自动校验，Prompt 只能靠人工审查
+- **可组合执行**：JSON 约束可以被 runtime 直接加载和执行，Prompt 只能被"建议遵守"
+- **可量化测试**：JSON evals 可以通过断言精确判断通过/失败，Prompt evals 依赖主观判断
+
+因此：
+- **Spec 必须使用 JSON**：`spec/constraints.json`、`spec/schema.json`、`spec/transitions.json`
+- **Evals 必须使用 JSON**：`evals/trigger_cases.json`、`evals/success_cases.json` 等
+- **SKILL.md 中的自然语言描述仅为人类可读的补充说明**，以 JSON 文件为准
+
+---
+
 ## Eval 驱动开发（Eval Driven Development）
 
 Eval 驱动开发是创建高质量 Skill 的核心方法论。
+
+在 SkillFather 中，Eval 驱动开发与 SDD 紧密结合：
+- SDD 定义"Skill 应该做什么"（spec/）
+- TDD 定义"如何验证 Skill 做对了"（evals/）
+- 两者都使用 JSON 格式，确保机器可解析、可验证
 
 ---
 
@@ -173,5 +203,5 @@ Eval 驱动开发是创建高质量 Skill 的核心方法论。
 
 形成闭环：
 ```
-编写 Eval -> 实现 Skill -> 运行 Eval -> 分析结果 -> 优化 Skill
+定义 JSON Spec（SDD） -> 定义 JSON Eval（TDD） -> 实现 Skill -> 运行 Eval -> 分析结果 -> 优化 Skill
 ```

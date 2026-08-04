@@ -156,6 +156,9 @@ evals/
       "required_files": [
         "SKILL.md",
         "skill.yaml",
+        "spec/constraints.json",
+        "spec/schema.json",
+        "spec/transitions.json",
         "evals/trigger_cases.json",
         "evals/success_cases.json",
         "evals/failure_cases.json",

@@ -11,6 +11,8 @@ workflows/
 └── state-machine.yaml      # 状态机定义（YAML 格式）
 ```
 
+**注意**：状态机的机器可读版本存储在 `spec/transitions.json`（JSON 格式），`state-machine.yaml` 是人类可读的 YAML 版本，两者必须保持一致。
+
 ---
 
 ## state-machine.yaml 模板
