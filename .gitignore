@@ -3,3 +3,10 @@
 
 # Ada Library Information
 *.ali
+
+# Devin skills (local only)
+.devin/
+
+# Python
+__pycache__/
+*.pyc
