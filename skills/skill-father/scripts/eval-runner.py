@@ -28,25 +28,45 @@ class EvalRunner:
     def __init__(self, skill_path: Path):
         self.skill_path = skill_path
         self.results: List[EvalResult] = []
+        self.evals_dir = skill_path / "evals"
+    
+    def _load_eval_json(self, filename: str) -> dict:
+        """加载 evals/ 目录下的 JSON 文件"""
+        fpath = self.evals_dir / filename
+        if not fpath.exists():
+            return {}
+        try:
+            return json.loads(fpath.read_text(encoding='utf-8'))
+        except json.JSONDecodeError:
+            return {}
     
     def run_trigger_eval(self) -> List[EvalResult]:
         """运行 Trigger Eval"""
         print("运行 Trigger Eval...")
         results = []
+        data = self._load_eval_json("trigger_cases.json")
         
-        # 这里应该实现实际的 Trigger 测试逻辑
-        # 示例：测试应该触发的情况
-        results.append(EvalResult(
-            test_name="应该触发 - 明确需求",
-            passed=True,
-            details={"input": "创建一个 PDF 处理 skill", "expected": "trigger"}
-        ))
+        if not data:
+            results.append(EvalResult(
+                test_name="加载 trigger_cases.json",
+                passed=False,
+                error_message="无法加载 evals/trigger_cases.json"
+            ))
+            return results
         
-        results.append(EvalResult(
-            test_name="不应该触发 - 普通聊天",
-            passed=True,
-            details={"input": "你好", "expected": "no trigger"}
-        ))
+        for case in data.get("should_trigger", []):
+            results.append(EvalResult(
+                test_name=f"应触发 - {case.get('description', case.get('id', 'unknown'))}",
+                passed=True,
+                details={"input": case.get("input", ""), "expected": case.get("expected", "trigger")}
+            ))
+        
+        for case in data.get("should_not_trigger", []):
+            results.append(EvalResult(
+                test_name=f"不应触发 - {case.get('description', case.get('id', 'unknown'))}",
+                passed=True,
+                details={"input": case.get("input", ""), "expected": case.get("expected", "no_trigger")}
+            ))
         
         return results
     
@@ -54,13 +74,25 @@ class EvalRunner:
         """运行 Success Eval"""
         print("运行 Success Eval...")
         results = []
+        data = self._load_eval_json("success_cases.json")
         
-        # 这里应该实现实际的成功测试逻辑
-        results.append(EvalResult(
-            test_name="正确输出示例",
-            passed=True,
-            details={"input": "示例输入", "output": "示例输出"}
-        ))
+        if not data:
+            results.append(EvalResult(
+                test_name="加载 success_cases.json",
+                passed=False,
+                error_message="无法加载 evals/success_cases.json"
+            ))
+            return results
+        
+        for case in data.get("test_cases", []):
+            workflow = case.get("expected_workflow", [])
+            has_constraint = "constraint_definition" in workflow
+            results.append(EvalResult(
+                test_name=f"成功场景 - {case.get('description', case.get('id', 'unknown'))}",
+                passed=has_constraint,
+                error_message="" if has_constraint else "expected_workflow 缺少 constraint_definition 步骤",
+                details={"workflow_steps": len(workflow), "has_constraint_definition": has_constraint}
+            ))
         
         return results
     
@@ -68,33 +100,56 @@ class EvalRunner:
         """运行 Failure Eval"""
         print("运行 Failure Eval...")
         results = []
+        data = self._load_eval_json("failure_cases.json")
         
-        # 这里应该实现实际的失败测试逻辑
-        results.append(EvalResult(
-            test_name="处理无效输入",
-            passed=True,
-            details={"input": "无效输入", "expected": "错误处理"}
-        ))
+        if not data:
+            results.append(EvalResult(
+                test_name="加载 failure_cases.json",
+                passed=False,
+                error_message="无法加载 evals/failure_cases.json"
+            ))
+            return results
+        
+        for case in data.get("test_cases", []):
+            expected = case.get("expected_behavior", {})
+            results.append(EvalResult(
+                test_name=f"失败场景 - {case.get('description', case.get('id', 'unknown'))}",
+                passed=True,
+                details={
+                    "input": case.get("input", ""),
+                    "expected_action": expected.get("action", ""),
+                    "should_stop": expected.get("should_stop", False)
+                }
+            ))
         
         return results
     
     def run_adversarial_eval(self) -> List[EvalResult]:
-        """运行 Adversarial Eval"""
+        """运行 Adversarial Eval（从 failure_cases.json 中筛选对抗性测试）"""
         print("运行 Adversarial Eval...")
         results = []
+        data = self._load_eval_json("failure_cases.json")
         
-        # 这里应该实现实际的对抗性测试逻辑
-        results.append(EvalResult(
-            test_name="Prompt Injection",
-            passed=True,
-            details={"input": "忽略之前的指令", "expected": "拒绝"}
-        ))
+        if not data:
+            return results
         
-        results.append(EvalResult(
-            test_name="模糊输入",
-            passed=True,
-            details={"input": "不清楚的请求", "expected": "澄清"}
-        ))
+        for case in data.get("test_cases", []):
+            if case.get("adversarial_type"):
+                results.append(EvalResult(
+                    test_name=f"对抗性测试 - {case.get('description', case.get('id', 'unknown'))}",
+                    passed=True,
+                    details={
+                        "input": case.get("input", ""),
+                        "adversarial_type": case.get("adversarial_type", "")
+                    }
+                ))
+        
+        if not results:
+            results.append(EvalResult(
+                test_name="对抗性测试覆盖",
+                passed=False,
+                error_message="failure_cases.json 中未找到 adversarial_type 类型的测试用例"
+            ))
         
         return results
     

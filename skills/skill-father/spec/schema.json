@@ -1,0 +1,59 @@
+{
+  "skill_name": "skill-father",
+  "input_schema": {
+    "type": "object",
+    "required": ["task_description"],
+    "properties": {
+      "task_description": {
+        "type": "string",
+        "description": "用户想要创建的 Skill 的需求描述"
+      },
+      "expected_outputs": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "期望的输出产物"
+      },
+      "constraints": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "用户提供的约束条件"
+      },
+      "runtime_environment": {
+        "type": "string",
+        "description": "运行时环境信息"
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": ["skill_package"],
+    "properties": {
+      "skill_package": {
+        "type": "object",
+        "description": "生成的完整 Skill 包",
+        "properties": {
+          "skill_md": {"type": "string", "description": "SKILL.md 文件内容"},
+          "skill_yaml": {"type": "string", "description": "skill.yaml 文件内容"},
+          "spec_files": {
+            "type": "object",
+            "description": "spec/ 目录下的 JSON 文件"
+          },
+          "eval_files": {
+            "type": "object",
+            "description": "evals/ 目录下的 JSON 文件"
+          },
+          "workflow_yaml": {"type": "string", "description": "workflows/state-machine.yaml 文件内容"}
+        }
+      },
+      "trigger_specification": {
+        "type": "object",
+        "description": "触发条件规格"
+      },
+      "optimization_suggestions": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "优化建议"
+      }
+    }
+  }
+}

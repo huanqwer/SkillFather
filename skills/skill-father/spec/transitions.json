@@ -1,0 +1,95 @@
+{
+  "skill_name": "skill-father",
+  "transitions": [
+    {
+      "from": "idle",
+      "to": "intent_extraction",
+      "condition": "request_received",
+      "required_checks": ["input_valid"]
+    },
+    {
+      "from": "intent_extraction",
+      "to": "capability_abstraction",
+      "condition": "intent_complete",
+      "required_checks": ["user_goal_defined", "task_boundary_clear", "has_reuse_value"]
+    },
+    {
+      "from": "intent_extraction",
+      "to": "idle",
+      "condition": "no_reuse_value",
+      "required_checks": []
+    },
+    {
+      "from": "intent_extraction",
+      "to": "intent_extraction",
+      "condition": "intent_incomplete",
+      "required_checks": []
+    },
+    {
+      "from": "capability_abstraction",
+      "to": "constraint_definition",
+      "condition": "abstraction_complete",
+      "required_checks": ["capabilities_defined", "workflow_nodes_defined"]
+    },
+    {
+      "from": "capability_abstraction",
+      "to": "intent_extraction",
+      "condition": "user_conflict",
+      "required_checks": []
+    },
+    {
+      "from": "constraint_definition",
+      "to": "eval_definition",
+      "condition": "constraint_complete",
+      "required_checks": ["constraints_json_created", "schema_json_created", "transitions_json_created"]
+    },
+    {
+      "from": "constraint_definition",
+      "to": "idle",
+      "condition": "constraint_undefined",
+      "required_checks": []
+    },
+    {
+      "from": "eval_definition",
+      "to": "skill_generation",
+      "condition": "eval_complete",
+      "required_checks": ["trigger_eval_defined", "success_eval_defined", "failure_eval_defined"]
+    },
+    {
+      "from": "eval_definition",
+      "to": "idle",
+      "condition": "eval_undefined",
+      "required_checks": []
+    },
+    {
+      "from": "skill_generation",
+      "to": "trigger_optimization",
+      "condition": "generation_complete",
+      "required_checks": ["skill_md_created", "skill_yaml_created", "spec_json_created", "evals_json_created"]
+    },
+    {
+      "from": "trigger_optimization",
+      "to": "runtime_optimization",
+      "condition": "optimization_complete",
+      "required_checks": ["description_optimized", "trigger_optimized"]
+    },
+    {
+      "from": "runtime_optimization",
+      "to": "success",
+      "condition": "optimization_complete",
+      "required_checks": ["progressive_disclosure_supported", "lazy_loading_supported"]
+    },
+    {
+      "from": "success",
+      "to": "idle",
+      "condition": "always",
+      "required_checks": []
+    },
+    {
+      "from": "failure",
+      "to": "idle",
+      "condition": "always",
+      "required_checks": []
+    }
+  ]
+}

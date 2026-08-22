@@ -1,5 +1,5 @@
 {
-  "skill_name": "skill-creator",
+  "skill_name": "skill-father",
   "eval_type": "failure",
   "description": "验证 Skill 在异常情况下的处理能力",
   "test_cases": [

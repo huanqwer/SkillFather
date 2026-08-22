@@ -1,5 +1,5 @@
 {
-  "skill_name": "skill-creator",
+  "skill_name": "skill-father",
   "eval_type": "benchmark",
   "description": "Skill 性能基准测试",
   "performance_metrics": {
@@ -35,6 +35,9 @@
       "required_files": [
         "SKILL.md",
         "skill.yaml",
+        "spec/constraints.json",
+        "spec/schema.json",
+        "spec/transitions.json",
         "evals/trigger_cases.json",
         "evals/success_cases.json",
         "evals/failure_cases.json",

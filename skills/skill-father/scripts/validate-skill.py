@@ -8,6 +8,7 @@ Skill 验证脚本
 import os
 import sys
 import re
+import json
 from pathlib import Path
 
 try:
@@ -135,6 +136,44 @@ def validate_skill_directory(skill_path: Path) -> list[str]:
     
     # 验证 SKILL.md
     errors.extend(validate_skill_file(skill_path))
+    
+    # 检查必需目录
+    required_dirs = ['spec', 'evals', 'workflows']
+    for dir_name in required_dirs:
+        dir_path = skill_path / dir_name
+        if not dir_path.exists():
+            errors.append(f"缺少必需目录: {dir_name}/")
+        elif not dir_path.is_dir():
+            errors.append(f"{dir_name} 必须是目录")
+    
+    # 检查必需 spec JSON 文件
+    spec_files = ['constraints.json', 'schema.json', 'transitions.json']
+    for f in spec_files:
+        fpath = skill_path / "spec" / f
+        if fpath.exists():
+            try:
+                json.loads(fpath.read_text(encoding='utf-8'))
+            except json.JSONDecodeError as e:
+                errors.append(f"spec/{f} JSON 格式错误: {e}")
+        else:
+            errors.append(f"缺少必需文件: spec/{f}")
+    
+    # 检查必需 eval JSON 文件
+    eval_files = ['trigger_cases.json', 'success_cases.json', 'failure_cases.json']
+    for f in eval_files:
+        fpath = skill_path / "evals" / f
+        if fpath.exists():
+            try:
+                json.loads(fpath.read_text(encoding='utf-8'))
+            except json.JSONDecodeError as e:
+                errors.append(f"evals/{f} JSON 格式错误: {e}")
+        else:
+            errors.append(f"缺少必需文件: evals/{f}")
+    
+    # 检查必需 workflow 文件
+    workflow_file = skill_path / "workflows" / "state-machine.yaml"
+    if not workflow_file.exists():
+        errors.append("缺少必需文件: workflows/state-machine.yaml")
     
     # 检查可选目录
     optional_dirs = ['scripts', 'references', 'assets']

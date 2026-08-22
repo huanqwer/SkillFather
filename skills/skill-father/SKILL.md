@@ -198,41 +198,17 @@ JSON Spec 是"约束"——可以被 runtime 解析、验证、强制执行。
 
 ### spec/constraints.json
 
-定义 Skill 的强制行为约束：
+定义 Skill 的强制行为约束（must / must_not / preconditions / postconditions）：
 
 ```json
 {
   "skill_name": "skill-name",
   "version": "1.0.0",
   "constraints": {
-    "must": [
-      {
-        "id": "must-001",
-        "rule": "必须先验证输入再执行",
-        "validation": "input_validation_required"
-      }
-    ],
-    "must_not": [
-      {
-        "id": "must-not-001",
-        "rule": "禁止跳过输入验证",
-        "validation": "no_skip_validation"
-      }
-    ],
-    "preconditions": [
-      {
-        "id": "pre-001",
-        "condition": "用户意图已确认",
-        "check": "intent_confirmed"
-      }
-    ],
-    "postconditions": [
-      {
-        "id": "post-001",
-        "condition": "输出包含所有必需字段",
-        "check": "output_complete"
-      }
-    ]
+    "must": [{"id": "must-001", "rule": "必须先验证输入再执行", "validation": "input_validation_required"}],
+    "must_not": [{"id": "must-not-001", "rule": "禁止跳过输入验证", "validation": "no_skip_validation"}],
+    "preconditions": [{"id": "pre-001", "condition": "用户意图已确认", "check": "intent_confirmed"}],
+    "postconditions": [{"id": "post-001", "condition": "输出包含所有必需字段", "check": "output_complete"}]
   }
 }
 ```
@@ -244,20 +220,8 @@ JSON Spec 是"约束"——可以被 runtime 解析、验证、强制执行。
 ```json
 {
   "skill_name": "skill-name",
-  "input_schema": {
-    "type": "object",
-    "required": ["task_description"],
-    "properties": {
-      "task_description": { "type": "string" }
-    }
-  },
-  "output_schema": {
-    "type": "object",
-    "required": ["result"],
-    "properties": {
-      "result": { "type": "string" }
-    }
-  }
+  "input_schema": {"type": "object", "required": ["task_description"], "properties": {"task_description": {"type": "string"}}},
+  "output_schema": {"type": "object", "required": ["result"], "properties": {"result": {"type": "string"}}}
 }
 ```
 
@@ -268,14 +232,7 @@ JSON Spec 是"约束"——可以被 runtime 解析、验证、强制执行。
 ```json
 {
   "skill_name": "skill-name",
-  "transitions": [
-    {
-      "from": "idle",
-      "to": "processing",
-      "condition": "request_received",
-      "required_checks": ["input_valid"]
-    }
-  ]
+  "transitions": [{"from": "idle", "to": "processing", "condition": "request_received", "required_checks": ["input_valid"]}]
 }
 ```
 
@@ -418,19 +375,7 @@ Eval 测试用例：evals/trigger_cases.json, evals/success_cases.json
 参考文档：references/skill-spec-summary.md
 ```
 
-Skill 必须：
-
-- 标准化
-- 结构化
-- AI阅读友好
-- 使用标准化的 spec/ 目录结构（SDD 强制约束，JSON 格式）
-- 使用标准化的 evals/ 目录结构（TDD 测试用例，JSON 格式）
-- 使用标准化的 workflows/ 目录结构
-- 强制约束必须使用 JSON 格式（spec/ 目录）
-- Eval 测试用例必须使用 JSON 格式
-- 工作流定义必须使用 YAML 格式
-- SKILL.md 必须包含"强制约束"模块并引用 spec/ 下的 JSON 文件
-- SKILL.md 必须包含对相关文件的引用
+Skill 必须：标准化、结构化、AI 阅读友好。spec/ 使用 JSON，evals/ 使用 JSON，workflows/ 使用 YAML。SKILL.md 必须包含"强制约束"模块并引用 spec/ 下的 JSON 文件，必须包含对相关文件的引用。
 
 ---
 
@@ -539,29 +484,8 @@ Trigger 优化指南：`references/trigger-optimization.md`
 
 # Skill Engineering Philosophy
 
-Skill ≠ Prompt
+Skill ≠ Prompt。Skill 是能力单元，应具备生命周期、Eval、Runtime、Telemetry、Versioning、Retrieval、Workflow、State Machine。
 
-Skill 是：
-
-能力单元
-
-Skill 应具备：
-
-- 生命周期
-- Eval
-- Runtime
-- Telemetry
-- Versioning
-- Retrieval
-- Workflow
-- State Machine
-
-你正在构建的：
-
-不是 Prompt。
-
-而是：
-
-Agent 能力基础设施。
+你正在构建的不是 Prompt，而是 Agent 能力基础设施。
 
 ---

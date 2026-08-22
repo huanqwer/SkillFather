@@ -1,5 +1,5 @@
 {
-  "skill_name": "skill-creator",
+  "skill_name": "skill-father",
   "eval_type": "success",
   "description": "验证 Skill 在正常情况下的正确输出",
   "test_cases": [
@@ -15,21 +15,24 @@
       "expected_workflow": [
         "intent_extraction",
         "capability_abstraction",
+        "constraint_definition",
         "eval_definition",
         "skill_generation",
         "trigger_optimization",
         "runtime_optimization"
       ],
       "expected_outputs": {
-        "SKILL.md": "包含完整的 YAML Frontmatter 和 Markdown Body",
+        "SKILL.md": "包含完整的 YAML Frontmatter（仅 name 和 description）和 Markdown Body",
         "skill.yaml": "机器可读的配置文件",
-        "eval_suite": "包含 Trigger、Success、Failure、Adversarial Eval",
+        "spec": "包含 constraints.json、schema.json、transitions.json",
+        "eval_suite": "包含 Trigger、Success、Failure、Adversarial Eval（JSON 格式）",
         "workflow_definition": "包含状态机和工作流图"
       },
       "success_criteria": [
         "意图抽取：询问用户目标、任务边界、输入输出、工具需求",
         "能力抽象：将需求转换为可复用能力、工作流节点、状态机",
-        "定义 Eval：生成完整的 Eval 测试用例",
+        "定义强制约束（SDD）：生成 spec/ 目录下的 JSON 约束文件",
+        "定义 Eval（TDD）：生成完整的 JSON Eval 测试用例",
         "生成 Skill：创建标准化的目录结构和文件",
         "优化 Trigger：优化 description 和触发条件",
         "Runtime 优化：确保支持渐进式披露"
@@ -47,6 +50,7 @@
       "expected_workflow": [
         "intent_extraction",
         "capability_abstraction",
+        "constraint_definition",
         "eval_definition",
         "skill_generation",
         "trigger_optimization",
@@ -55,7 +59,8 @@
       "expected_outputs": {
         "SKILL.md": "包含代码审查相关的触发条件和评估标准",
         "skill.yaml": "定义代码审查的工作流和状态机",
-        "eval_suite": "包含代码正确性、安全性、性能的测试用例"
+        "spec": "包含 constraints.json、schema.json、transitions.json",
+        "eval_suite": "包含代码正确性、安全性、性能的测试用例（JSON 格式）"
       }
     },
     {
@@ -70,6 +75,7 @@
       "expected_workflow": [
         "intent_extraction",
         "capability_abstraction",
+        "constraint_definition",
         "eval_definition",
         "skill_generation",
         "trigger_optimization",
@@ -78,13 +84,14 @@
       "expected_outputs": {
         "SKILL.md": "包含数据处理的触发条件和评估标准",
         "skill.yaml": "定义数据处理的工作流",
-        "eval_suite": "包含数据准确性、性能的测试用例"
+        "spec": "包含 constraints.json、schema.json、transitions.json",
+        "eval_suite": "包含数据准确性、性能的测试用例（JSON 格式）"
       }
     }
   ],
   "success_criteria": {
     "completion_rate": ">= 90%",
     "output_quality": "符合 Skill 规范",
-    "workflow_completeness": "6 个步骤全部执行"
+    "workflow_completeness": "7 个步骤全部执行"
   }
 }

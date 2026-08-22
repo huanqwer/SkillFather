@@ -125,19 +125,52 @@ workflow:
   state_machine:
     states:
       - idle
-      - processing
+      - intent_extraction
+      - capability_abstraction
+      - constraint_definition
+      - eval_definition
+      - skill_generation
+      - trigger_optimization
+      - runtime_optimization
       - success
       - failure
     transitions:
       - from: idle
-        to: processing
+        to: intent_extraction
         trigger: request_received
-      - from: processing
+      - from: intent_extraction
+        to: capability_abstraction
+        trigger: intent_complete
+      - from: intent_extraction
+        to: idle
+        trigger: no_reuse_value
+      - from: capability_abstraction
+        to: constraint_definition
+        trigger: abstraction_complete
+      - from: capability_abstraction
+        to: intent_extraction
+        trigger: user_conflict
+      - from: constraint_definition
+        to: eval_definition
+        trigger: constraint_complete
+      - from: constraint_definition
+        to: idle
+        trigger: constraint_undefined
+      - from: eval_definition
+        to: skill_generation
+        trigger: eval_complete
+      - from: eval_definition
+        to: idle
+        trigger: eval_undefined
+      - from: skill_generation
+        to: trigger_optimization
+        trigger: generation_complete
+      - from: trigger_optimization
+        to: runtime_optimization
+        trigger: optimization_complete
+      - from: runtime_optimization
         to: success
-        trigger: processing_complete
-      - from: processing
-        to: failure
-        trigger: processing_failed
+        trigger: optimization_complete
       - from: success
         to: idle
         trigger: cleanup

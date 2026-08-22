@@ -1,0 +1,99 @@
+{
+  "skill_name": "skill-father",
+  "version": "1.0.0",
+  "constraints": {
+    "must": [
+      {
+        "id": "must-001",
+        "rule": "必须先定义 JSON 强制约束（spec/）再生成 Skill",
+        "validation": "spec_defined_before_generation"
+      },
+      {
+        "id": "must-002",
+        "rule": "必须先定义 JSON Eval（evals/）再生成 Skill",
+        "validation": "eval_defined_before_generation"
+      },
+      {
+        "id": "must-003",
+        "rule": "SKILL.md frontmatter 只包含 name 和 description",
+        "validation": "frontmatter_minimal"
+      },
+      {
+        "id": "must-004",
+        "rule": "必须创建完整的标准化目录结构",
+        "validation": "directory_structure_complete"
+      },
+      {
+        "id": "must-005",
+        "rule": "必须循环询问用户直到意图抽取完整",
+        "validation": "intent_extraction_loop"
+      }
+    ],
+    "must_not": [
+      {
+        "id": "must-not-001",
+        "rule": "禁止跳过强制约束定义（SDD）",
+        "validation": "no_skip_sdd"
+      },
+      {
+        "id": "must-not-002",
+        "rule": "禁止跳过 Eval 定义（TDD）",
+        "validation": "no_skip_tdd"
+      },
+      {
+        "id": "must-not-003",
+        "rule": "禁止使用自然语言替代 JSON 定义 spec 和 evals",
+        "validation": "no_natural_language_spec"
+      },
+      {
+        "id": "must-not-004",
+        "rule": "禁止生成超大单体 Prompt",
+        "validation": "no_monolith_prompt"
+      },
+      {
+        "id": "must-not-005",
+        "rule": "禁止在 frontmatter 中添加 version、category、author 等冗余字段",
+        "validation": "no_redundant_frontmatter"
+      }
+    ],
+    "preconditions": [
+      {
+        "id": "pre-001",
+        "condition": "用户意图已确认",
+        "check": "intent_confirmed"
+      },
+      {
+        "id": "pre-002",
+        "condition": "任务具备复用价值",
+        "check": "has_reuse_value"
+      },
+      {
+        "id": "pre-003",
+        "condition": "任务适合 Agent 自动化",
+        "check": "suitable_for_automation"
+      }
+    ],
+    "postconditions": [
+      {
+        "id": "post-001",
+        "condition": "spec/ JSON 文件完整且有效",
+        "check": "spec_complete"
+      },
+      {
+        "id": "post-002",
+        "condition": "evals/ JSON 文件完整且有效",
+        "check": "evals_complete"
+      },
+      {
+        "id": "post-003",
+        "condition": "SKILL.md 包含强制约束模块",
+        "check": "has_constraint_module"
+      },
+      {
+        "id": "post-004",
+        "condition": "目录结构标准化",
+        "check": "directory_standardized"
+      }
+    ]
+  }
+}
