@@ -1,6 +1,6 @@
 # References 目录
 
-本目录包含 skill-creator 的参考文档和最佳实践指南。
+本目录包含 skill-father 的参考文档和最佳实践指南。
 
 ---
 
@@ -14,7 +14,7 @@ references/
 └── README.md                  # 本文件
 ```
 
-**注意**：skill-creator 的 Eval 定义已移至 `evals/` 目录，使用 JSON 格式。
+**注意**：skill-father 的 Eval 定义已移至 `evals/` 目录，使用 JSON 格式。
 
 ---
 

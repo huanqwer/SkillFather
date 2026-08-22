@@ -1,6 +1,6 @@
 # Assets 目录
 
-本目录包含 skill-creator 的模板文件和静态资源。
+本目录包含 skill-father 的模板文件和静态资源。
 
 ---
 
